@@ -6,10 +6,9 @@ def get_character_movies_from_api(character)
   #make the web request
   response_string = RestClient.get('http://www.swapi.co/api/people/')
   response_hash = JSON.parse(response_string)
-  
-  # NOTE: in this demonstration we name many of the variables _hash or _array. 
-  # This is done for educational purposes. This is not typically done in code.
 
+  # NOTE: in this demonstration we name many of the variables _hash or _array.
+  # This is done for educational purposes. This is not typically done in code.
 
   # iterate over the response hash to find the collection of `films` for the given
   #   `character`
@@ -20,11 +19,32 @@ def get_character_movies_from_api(character)
   # this collection will be the argument given to `parse_character_movies`
   #  and that method will do some nice presentation stuff: puts out a list
   #  of movies by title. play around with puts out other info about a given film.
+  film_arr = []
+
+  response_hash['results'].each do |attributes|
+    if attributes['name'].downcase == character.downcase
+      attributes['films'].each do |title_url|
+        films_string = RestClient.get(title_url)
+        films_json = JSON.parse(films_string)
+        film_arr << films_json
+      end
+    end
+  end
+  film_arr
 end
 
-def print_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
+def parse_character_movies(character)
+  puts get_character_movies_from_api(character)[0]["title"]
 end
+
+def print_movies(films_array)
+  # some iteration magic and puts out the movies in a nice list
+  films_array.each_with_index do |attribute, index|
+    puts "#{index + 1}. #{attribute["title"]}"
+  end
+end
+
+# print_movies(get_character_movies_from_api("Luke Skywalker"))
 
 def show_character_movies(character)
   films_array = get_character_movies_from_api(character)
