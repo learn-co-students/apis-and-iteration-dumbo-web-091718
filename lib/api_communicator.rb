@@ -2,34 +2,53 @@ require 'rest-client'
 require 'json'
 require 'pry'
 
+def get_hash(url)
+  response_string = RestClient.get(url)
+  return response_hash = JSON.parse(response_string)
+end
+
 def get_character_movies_from_api(character)
   #make the web request
-  response_string = RestClient.get('http://www.swapi.co/api/people/')
-  response_hash = JSON.parse(response_string)
-  
-  # NOTE: in this demonstration we name many of the variables _hash or _array. 
-  # This is done for educational purposes. This is not typically done in code.
+  response_hash = get_hash('http://www.swapi.co/api/people/')
+  #binding.pry
+  films_array =[]
+  response_hash["results"].each do |person|
+	   if person['name'].downcase == character
+      	person['films'].each do |url|
+          film_hash = get_hash(url)
+	        films_array << film_hash
+	       end
+	   end
+   end
+films_array
+end
 
-
-  # iterate over the response hash to find the collection of `films` for the given
-  #   `character`
-  # collect those film API urls, make a web request to each URL to get the info
-  #  for that film
-  # return value of this method should be collection of info about each film.
-  #  i.e. an array of hashes in which each hash reps a given film
-  # this collection will be the argument given to `parse_character_movies`
-  #  and that method will do some nice presentation stuff: puts out a list
-  #  of movies by title. play around with puts out other info about a given film.
+def get_director(film_name)
+  films_hash = get_hash('https://swapi.co/api/films')
+  films_hash["results"].each do |film|
+      if film["title"].downcase == film_name
+        puts "#{film["title"]}'s Director: #{film["director"]}"
+      end
+  end
 end
 
 def print_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
+  films_hash.each do |film|
+    puts "Title: #{film["title"]}"
+    puts "Episode: #{film["episode_id"]}"
+    puts "Director: #{film["director"]}"
+    puts "Released: #{film["release_date"]}"
+  end
 end
+
 
 def show_character_movies(character)
   films_array = get_character_movies_from_api(character)
   print_movies(films_array)
 end
+
+#show_character_movies("Luke Skywalker")
 
 ## BONUS
 
