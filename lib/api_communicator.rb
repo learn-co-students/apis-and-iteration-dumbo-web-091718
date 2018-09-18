@@ -9,19 +9,30 @@ end
 
 def get_character_movies_from_api(character)
   #make the web request
-  response_hash = get_hash('http://www.swapi.co/api/people/')
-  #binding.pry
   films_array =[]
-  response_hash["results"].each do |person|
-	   if person['name'].downcase == character
-      	person['films'].each do |url|
-          film_hash = get_hash(url)
-	        films_array << film_hash
-	       end
-	   end
+  response_hash = get_hash('http://www.swapi.co/api/people/')
+  array = [response_hash]
+  while array[-1]["next"] != nil
+    array << get_hash(response_hash["next"])
+    response_hash = get_hash(response_hash["next"])
+    #binding.pry
+  end
+
+  #binding.pry
+ array.each do |hash_hash|
+    hash_hash["results"].each do |person|
+  	   if person['name'].downcase == character
+        	person['films'].each do |url|
+            film_hash = get_hash(url)
+  	        films_array << film_hash
+  	       end
+  	   end
    end
+ end
 films_array
 end
+
+#get_character_movies_from_api("Luke Skywalker")
 
 def get_director(film_name)
   films_hash = get_hash('https://swapi.co/api/films')
