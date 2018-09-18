@@ -37,14 +37,12 @@ def parse_character_movies(character)
   puts get_character_movies_from_api(character)[0]["title"]
 end
 
-def print_movies(films_array)
+def print_movies(films_hash)
   # some iteration magic and puts out the movies in a nice list
-  films_array.each_with_index do |attribute, index|
+  films_hash.each_with_index do |attribute, index|
     puts "#{index + 1}. #{attribute["title"]}"
   end
 end
-
-# print_movies(get_character_movies_from_api("Luke Skywalker"))
 
 def show_character_movies(character)
   films_array = get_character_movies_from_api(character)
