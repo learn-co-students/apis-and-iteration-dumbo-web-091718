@@ -9,7 +9,6 @@ def get_character_movies_from_api(character_name)
 end
 
 def print_movies(films_hash)
-  # some iteration magic and puts out the movies in a nice list
   films_hash.each_with_index do |film_info, index|
     puts "#{index + 1}. #{film_info["title"]}"
   end
@@ -21,20 +20,17 @@ def show_character_movies(character)
 end
 
 ## BONUS
-
 # that `get_character_movies_from_api` method is probably pretty long. Does it do more than one job?
 # can you split it up into helper methods?
 def get_films(character, url)
   response_string = RestClient.get(url)
-  response_hash = JSON.parse(response_string)
+  response_hash   = JSON.parse(response_string)
   films = []
   response_hash["results"].each do |characters|
     if characters["name"].downcase == character
-      characters["films"].each do |film|
-        films << film
-      end
+      characters["films"].each { |film| films << film }
     end
   end
 
-  films.empty? ? get_films(character, response_hash["next"]) : films
+  films.length == 0 ? get_films(character, response_hash["next"]) : films
 end
