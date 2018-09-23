@@ -1,9 +1,10 @@
 require 'rest-client'
 require 'json'
 require 'pry'
-def get_character_movies_from_api(character)
-  #make the web request
 
+
+def get_character_movies_from_api(character)
+  #this url makes web request for the main page
   response_string = RestClient.get("http://www.swapi.co/api/people/").body
   main_hash = JSON.parse(response_string)
 
@@ -38,6 +39,9 @@ end
 
 
 #REFACTOR Search For NEXT PAGE && add to method 1
+
+
+
 
 #    def search_eng(character)
 #      mainPage_parsedCharacters = JSON.parse(RestClient.get('http://www.swapi.co/api/people/')) #Get and parse at once with ResClient
